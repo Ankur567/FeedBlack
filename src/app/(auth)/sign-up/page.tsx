@@ -21,8 +21,6 @@ const Page = () => {
   const [usernameMessage, setUsernameMessage] = useState("")
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  // we dont want to check valid username at every keyboard stroke so we use debouncing
-  const [debouncedUsername, setDebouncedUsername] = useDebounceValue(username, 500)   
   const { toast } = useToast()
   const router = useRouter()    
   

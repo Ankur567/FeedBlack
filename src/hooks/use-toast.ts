@@ -33,7 +33,7 @@ function genId() {
   return count.toString()
 }
 
-type ActionType = keyof typeof actionTypes // ✅ Extract correct action type keys
+// type ActionType = keyof typeof actionTypes // ✅ Extract correct action type keys
 
 type Action =
   | {

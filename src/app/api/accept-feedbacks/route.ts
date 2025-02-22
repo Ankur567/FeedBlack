@@ -48,6 +48,7 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
+    console.log(error)
     return Response.json(
       {
         success: false,
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   await connectDB();
 
   // we want to extract the user details from the session

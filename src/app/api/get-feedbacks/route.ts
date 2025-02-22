@@ -5,7 +5,7 @@ import { User } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
 import mongoose from "mongoose";
 
-export async function GET(request: Request) {
+export async function GET() {
   await connectDB();
 
   const session = await getServerSession(authOptions);
