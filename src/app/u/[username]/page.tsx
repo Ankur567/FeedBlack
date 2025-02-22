@@ -1,7 +1,6 @@
-import FeedbackCard from "@/components/FeedbackCard"
 import React from 'react'
 
-const page = () => {
+const Page = () => {
   return (
     <div>
       yoo
@@ -9,4 +8,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

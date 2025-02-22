@@ -1,8 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -27,7 +25,7 @@ import { ApiResponse } from "@/types/apiResponse";
 
 type feedbackCardProps = {
   feedback: Feedback;
-  onFeedbackDelete: (feedbackId: String) => void;
+  onFeedbackDelete: (feedbackId: string) => void;
 };
 const FeedbackCard = ({ feedback, onFeedbackDelete }: feedbackCardProps) => {
   const { toast } = useToast();
