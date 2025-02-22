@@ -58,7 +58,7 @@ export async function GET(request: Request) {
         { status: 404 }
       );
     }
-    console.log(userFeedbacks[0].feedbacks);
+    // console.log(userFeedbacks[0].feedbacks);
     return Response.json(
       {
         success: true,
