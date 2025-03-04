@@ -5,9 +5,9 @@ export async function POST(request: Request) {
     await connectDB()
 
     try {
-        let {username, code} = await request.json()
-        username = decodeURIComponent(username)
-        const user = await UserModel.findOne({username})
+        const {username, code} = await request.json()
+        const decodeUsername = decodeURIComponent(username)
+        const user = await UserModel.findOne({decodeUsername})
         if(!user) {
             return Response.json(
                 {
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         const isCodeExpired = new Date(user.verifyCodeExpiry) < new Date(Date.now())
         if(isCodeValid && !isCodeExpired) {
             user.isVerified = true
-            user.save()
+            await user.save()
             console.log(isCodeExpired)
             return Response.json(
                 {
