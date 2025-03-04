@@ -90,7 +90,7 @@ export default function Sendfeedback() {
     try {
       complete('');
     } catch (error) {
-      console.error('Error fetching feedbacks:', error);
+      console.error('Error fetching feedbacks:');
       // Handle error appropriately
     }
   };
