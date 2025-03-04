@@ -42,7 +42,7 @@ export async function POST(request: Request) {
             }
             return otp;
         } 
-        let otp = otpGenerator()    // generating a new otp
+        const otp = otpGenerator()    // generating a new otp
 
         if(existingUserByEmail) {
             if(existingUserByEmail.isVerified) {

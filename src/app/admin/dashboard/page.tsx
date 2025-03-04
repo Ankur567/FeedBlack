@@ -22,7 +22,7 @@ const Page = () => {
 
   const { toast } = useToast();
 
-  const handleDeleteFeedback = (feedbackId: String) => {
+  const handleDeleteFeedback = (feedbackId: string) => {
     setFeedbacks(feedbacks.filter((feedback) => feedback._id != feedbackId));
   };
 
