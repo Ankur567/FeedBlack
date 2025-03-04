@@ -1,11 +1,12 @@
+import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import UserModel, { User } from "@/model/User";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { feedbackid: string } }
+  request: NextRequest, 
+  context: { params: { feedbackid: string } } // ✅ Change { params } to context
 ) {
   await connectDB();
 
@@ -13,24 +14,25 @@ export async function DELETE(
   const user: User = session?.user;
 
   if (!session || !session.user) {
-    return Response.json(
+    return NextResponse.json(
       {
         success: false,
         feedback: "User not authenticated. Please sign in !!",
       },
-      { status: 404 }
+      { status: 401 } // Use 401 for unauthorized access
     );
   }
 
-  const feedbackid = params.feedbackid;
+  const feedbackid = context.params.feedbackid; // ✅ Use context.params to access parameters
 
   try {
     const updateResult = await UserModel.updateOne(
       { _id: user._id },
       { $pull: { feedbacks: { _id: feedbackid } } }
     );
+
     if (updateResult.modifiedCount === 0) {
-      return Response.json(
+      return NextResponse.json(
         {
           feedback: "Feedback not found or already deleted",
           success: false,
@@ -39,7 +41,7 @@ export async function DELETE(
       );
     }
 
-    return Response.json(
+    return NextResponse.json(
       {
         feedback: "Feedback deleted",
         success: true,
@@ -48,7 +50,7 @@ export async function DELETE(
     );
   } catch (error) {
     console.error("Error deleting feedback:", error);
-    return Response.json(
+    return NextResponse.json(
       {
         feedback: "Error deleting feedback",
         success: false,
