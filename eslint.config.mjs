@@ -12,7 +12,8 @@ export default [
   pluginReact.configs.flat.recommended,
   {
     rules: {
-      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }] // Ignore vars starting with _
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }], // Ignore vars starting with _
+      "react/react-in-jsx-scope": "off"
     },
   },
 ];
