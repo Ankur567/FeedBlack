@@ -12,17 +12,17 @@ export async function POST(request: Request) {
             return Response.json(
                 { 
                     success: false,
-                    message: "User not found"
+                    feedback: "User not found"
                 }, { status: 404 }
             )
         }
 
-        // is user accepting messages?
+        // is user accepting feedbacks?
         if(!user.isAcceptingFeedback) {
             return Response.json(
                 { 
                     success: false,
-                    message: "User is not accepting feedbacks"
+                    feedback: "User is not accepting feedbacks"
                 }, { status: 401 }
             )
         }
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
         return Response.json(
             { 
                 success: true,
-                message: "Feedback sent succesfully"
+                feedback: "Feedback sent succesfully"
             }, { status: 200 }
         )
     } catch (error) {
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
         return Response.json(
             { 
                 success: false,
-                message: "Error sending message"
+                feedback: "Error sending feedback"
             }, { status: 500 }
         )
     }

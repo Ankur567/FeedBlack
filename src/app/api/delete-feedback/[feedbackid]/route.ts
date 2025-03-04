@@ -23,6 +23,7 @@ export async function DELETE(
   }
 
   const feedbackid = params.feedbackid;
+
   try {
     const updateResult = await UserModel.updateOne(
       { _id: user._id },
@@ -46,10 +47,10 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting message:", error);
+    console.error("Error deleting feedback:", error);
     return Response.json(
       {
-        feedback: "Error deleting message",
+        feedback: "Error deleting feedback",
         success: false,
       },
       { status: 500 }

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Feedback } from "@/model/User";
+import { Feedback, User } from "@/model/User";
 import { acceptFeedbackSchema } from "@/schemas/acceptFeedbackSchema";
 import { ApiResponse } from "@/types/apiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,7 +59,9 @@ const Page = () => {
       setIsLoading(true);
       try {
         const response = await axios.get<ApiResponse>("/api/get-feedbacks");
-        setFeedbacks(Array.isArray(response.data.feedback) ? response.data.feedback : []);
+        setFeedbacks(
+          Array.isArray(response.data.feedback) ? response.data.feedback : []
+        );
         if (refresh) {
           toast({
             title: "Refreshed feedbacks",
@@ -112,8 +114,10 @@ const Page = () => {
     }
   };
 
+  const username = session?.user as User;
+
   if (!session || !session.user) {
-    return <div></div>;
+    return <div> Please Login </div>;
   }
   return (
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
@@ -163,7 +167,7 @@ const Page = () => {
         {feedbacks.length > 0 ? (
           feedbacks.map((feedback, index) => (
             <FeedbackCard
-              key={feedback._id}
+              key={index} // Use index only if _id is not present
               feedback={feedback}
               onFeedbackDelete={handleDeleteFeedback}
             />

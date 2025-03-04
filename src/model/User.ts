@@ -2,16 +2,12 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface Feedback extends Document
 {
-    _id: string;
+    // _id: string;
     content: string;
     dateCreated: Date;
 }
 
 const FeedbackSchema: Schema<Feedback> = new Schema({
-    _id: {
-        type: String,
-        auto: true
-    },
     content: {
         type: String,
         required: true

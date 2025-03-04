@@ -81,11 +81,11 @@ const Page = () => {
   }
 
   return(
-    <div className="flex justify-center items-center min-h-screen bg-slate-300">
+    <div className="flex justify-center items-center min-h-screen bg-indigo-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            Join True Feedback
+            Join Anonymous Feedback
           </h1>
           <p className="mb-4">Sign up to start your anonymous adventure</p>
         </div>
@@ -128,7 +128,7 @@ const Page = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <Input {...field} name="email" />
-                  <p className='text-muted text-gray-500 text-sm'>We will send you a verification code</p>
+                  <p className='text-muted text-gray-400 text-sm'>We will send you a verification code on this email</p>
                   <FormMessage />
                 </FormItem>
               )}
@@ -145,7 +145,7 @@ const Page = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className='w-full' disabled={isSubmitting}>
+            <Button type="submit" className='w-full bg-indigo-950' disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

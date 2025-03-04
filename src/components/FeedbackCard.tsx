@@ -30,13 +30,17 @@ type feedbackCardProps = {
 const FeedbackCard = ({ feedback, onFeedbackDelete }: feedbackCardProps) => {
   const { toast } = useToast();
   const handleDeleteConfirm = async () => {
+    if (!feedback || !feedback._id) {
+      console.error("Feedback ID is missing:", feedback);
+      return;
+    }
     const response = await axios.delete<ApiResponse>(
       `/api/delete-feedback/${feedback._id}`
     );
     toast({
       title: response.data.feedback,
     });
-    onFeedbackDelete(feedback._id);
+    onFeedbackDelete(feedback._id.toString());
   };
   return (
     <Card className="card-bordered">

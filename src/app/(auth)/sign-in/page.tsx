@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import Link from "next/link"
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from "next/navigation"
+import { useRouter, redirect } from "next/navigation"
 import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -39,17 +39,17 @@ const Page = () => {
       })
     }
     if(result?.url) {
-      router.replace(`/home/dashboard`)
+      router.replace("/admin/dashboard");
     }
   }
 
 
   return(
-    <div className="flex justify-center items-center min-h-screen bg-slate-300">
+    <div className="flex justify-center items-center min-h-screen bg-indigo-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            Join True Feedback
+            Get Anonymous Feedback
           </h1>
           <p className="mb-4">Sign in to start your anonymous adventure</p>
         </div>
@@ -78,7 +78,7 @@ const Page = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className='w-full'>
+            <Button type="submit" className='w-full bg-indigo-950'>
               Sign In
             </Button>
           </form>
