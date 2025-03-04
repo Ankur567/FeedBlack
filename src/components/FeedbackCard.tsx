@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "./ui/button";
 import { X } from "lucide-react";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import { Feedback } from "@/model/User";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
@@ -34,9 +29,9 @@ const FeedbackCard = ({ feedback, onFeedbackDelete }: feedbackCardProps) => {
       console.error("Feedback ID is missing:", feedback);
       return;
     }
-    const response = await axios.delete<ApiResponse>(
-      `/api/delete-feedback/${feedback._id}`
-    );
+    const response = await axios.delete<ApiResponse>(`/api/delete-feedback`, {
+      data: { feedbackid: feedback._id },
+    });
     toast({
       title: response.data.feedback,
     });
@@ -49,7 +44,7 @@ const FeedbackCard = ({ feedback, onFeedbackDelete }: feedbackCardProps) => {
           <CardTitle>{feedback.content}</CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant='destructive'>
+              <Button variant="destructive">
                 <X className="w-5 h-5" />
               </Button>
             </AlertDialogTrigger>
@@ -62,9 +57,7 @@ const FeedbackCard = ({ feedback, onFeedbackDelete }: feedbackCardProps) => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>
-                  Cancel
-                </AlertDialogCancel>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={handleDeleteConfirm}>
                   Continue
                 </AlertDialogAction>
@@ -73,7 +66,7 @@ const FeedbackCard = ({ feedback, onFeedbackDelete }: feedbackCardProps) => {
           </AlertDialog>
         </div>
         <div className="text-sm">
-          {dayjs(feedback.dateCreated).format('MMM D, YYYY h:mm A')}
+          {dayjs(feedback.dateCreated).format("MMM D, YYYY h:mm A")}
         </div>
       </CardHeader>
       <CardContent></CardContent>

@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import UserModel, { User } from "@/model/User";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/options";
+import { authOptions } from "../auth/[...nextauth]/options";
 
-export async function DELETE(
-  request: NextRequest, 
-  context: { params: { feedbackid: string } } // ✅ Change { params } to context
-) {
+export async function DELETE(request: NextRequest) {
   await connectDB();
 
   const session = await getServerSession(authOptions);
@@ -23,8 +20,7 @@ export async function DELETE(
     );
   }
 
-  const feedbackid = context.params.feedbackid; // ✅ Use context.params to access parameters
-
+  const { feedbackid } = await request.json();
   try {
     const updateResult = await UserModel.updateOne(
       { _id: user._id },
