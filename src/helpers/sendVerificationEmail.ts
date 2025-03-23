@@ -16,11 +16,11 @@ export async function sendVerificationEmail(
       from: "Acme <onboarding@resend.dev>",
       to: ["codewithjeery@gmail.com"],
       subject: "Anom Feedback | Verification Code",
-      html: "<p>it works!</p>",
-      // react: verificationEmail({
-      //     username: username,
-      //     otp: verifyCode
-      // }),
+      //   html: "<p>it works!</p>",
+      react: verificationEmail({
+        username: username,
+        otp: verifyCode,
+      }),
     });
     console.log("Resend API Response:", response);
     return {
