@@ -19,6 +19,7 @@ import { ApiResponse } from '@/types/apiResponse';
 import { useToast } from '@/hooks/use-toast';
 
 export default function VerifyAccount() {
+  console.log(process.env.RESEND_API_KEY)
   const router = useRouter();
   const params = useParams<{ username: string }>();
   const { toast } = useToast();

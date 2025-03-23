@@ -49,7 +49,7 @@ export async function POST(request: Request) {
                 return Response.json(
                     {
                         success: false,
-                        message: "User already exists with this email"
+                        feedback: "User already exists with this email"
                     }, { status: 400 }
                 )
             } else {    // if a email already existing but unverified or want to change password
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
             return Response.json(
                 {
                     success: false,
-                    message: emailResponse.feedback
+                    feedback: emailResponse.feedback
                 }, { status: 500 }
             )
         }
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
         return Response.json(
             {
                 success: true,
-                message: "Verification mail has been sent. Please verify your email"
+                feedback: "Verification mail has been sent. Please verify your email"
             }, { status: 201 }
         )
 
@@ -99,7 +99,7 @@ export async function POST(request: Request) {
         return Response.json(
             {
                 success: false,
-                message: "Error registering user"
+                feedback: "Error registering user"
             }, { status: 500 }
         )
     }
