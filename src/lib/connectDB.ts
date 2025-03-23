@@ -5,6 +5,7 @@ type connectionObject = {
 }
 
 const connection: connectionObject = {}
+const uri = process.env.MONGODB_URI?.toString()
 
 async function connectDB() {
     if(connection.isConnected){
@@ -13,7 +14,7 @@ async function connectDB() {
     }
 
     try {
-        const db = await mongoose.connect(process.env.MONGODB_URI!)
+        const db = await mongoose.connect(uri!)
         connection.isConnected = mongoose.connections[0].readyState
         console.log("Database connected successfully")
     } catch (error) {
