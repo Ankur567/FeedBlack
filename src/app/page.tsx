@@ -5,7 +5,7 @@ import { TypeAnimation } from "react-type-animation";
 
 const HomePage = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-white text-black">
+    <div className="flex items-center justify-center min-h-screen bg-white text-indigo-950">
       <div className="text-center">
         <h1 className="text-7xl font-bold mb-4">
           <TypeAnimation

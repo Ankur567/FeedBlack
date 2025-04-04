@@ -108,8 +108,8 @@ const Page = () => {
                     onChange={(e) => {
                       field.onChange(e);
                       setUsername(e.target.value);
-                      //setDebouncedUsername(e.target.value);
                     }}
+                    className="border-indigo-100"
                   />
                   {isCheckingUsername && <Loader2 className="animate-spin" />}
                   {!isCheckingUsername && usernameMessage && (
@@ -133,8 +133,8 @@ const Page = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <Input {...field} name="email" />
-                  <p className="text-muted text-gray-400 text-sm">
+                  <Input {...field} name="email" className="border-indigo-100"/>
+                  <p className="text-muted text-indigo-200 text-sm">
                     We will send you a verification code on this email
                   </p>
                   <FormMessage />
@@ -148,14 +148,14 @@ const Page = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" {...field} name="password" />
+                  <Input type="password" {...field} name="password" className="border-indigo-100"/>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button
               type="submit"
-              className="w-full bg-indigo-950"
+              className="w-full bg-indigo-900 hover:bg-indigo-800"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
