@@ -16,12 +16,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 const Page = () => {
   const { toast } = useToast();
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // zod implementation
+  // zod implementation to define form
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -31,11 +34,13 @@ const Page = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+    setIsSubmitting(true);
     const result = await signIn("credentials", {
       redirect: false,
       identifier: data.identifier,
       password: data.password,
     });
+    setIsSubmitting(false);
     if (result?.error) {
       toast({
         title: "Login failed",
@@ -94,8 +99,16 @@ const Page = () => {
             <Button
               type="submit"
               className="w-full bg-indigo-900 hover:bg-indigo-800"
+              disabled={isSubmitting}
             >
-              Sign In
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
         </Form>

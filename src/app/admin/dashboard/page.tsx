@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 const Page = () => {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [stats, setStats] = useState({});
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
 
   const { toast } = useToast();
@@ -62,6 +63,11 @@ const Page = () => {
         setFeedbacks(
           Array.isArray(response.data.feedback) ? response.data.feedback : []
         );
+        const response2 = await axios.get<ApiResponse>(
+          "/api/sentiment-analysis"
+        );
+        console.log(response2.data.feedback)
+        setStats(response2.data.feedback);
         if (refresh) {
           toast({
             title: "Refreshed feedbacks",
@@ -115,15 +121,31 @@ const Page = () => {
   };
 
   const username = session?.user as User;
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : ""; // dynamically get base URL
+  const profileUrl = `${baseUrl}/u/${username?.username || ""}`;
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(profileUrl);
+      alert("Profile URL copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+      alert("Failed to copy URL");
+    }
+  };
 
   if (!session || !session.user) {
-    return <div className="flex items-center justify-center text-3xl font-bold"> Please Login </div>;
+    return (
+      <div className="flex items-center justify-center text-3xl font-bold">
+        {" "}
+        Please Login{" "}
+      </div>
+    );
   }
   return (
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
       <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
-
-      {/* <div className="mb-4">
+      <div className="mb-4">
         <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{" "}
         <div className="flex items-center">
           <input
@@ -134,8 +156,7 @@ const Page = () => {
           />
           <Button onClick={copyToClipboard}>Copy</Button>
         </div>
-      </div> */}
-
+      </div>
       <div className="mb-4">
         <Switch
           {...register("acceptfeedbacks")}

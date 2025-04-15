@@ -1,12 +1,17 @@
-import connectDB from "@/lib/connectDB";
-import UserModel from "@/model/User";
-import { getServerSession } from "next-auth";
+import { NextApiRequest, NextApiResponse } from "next";
+import Sentiment from "sentiment";
+import { ApiResponse } from "@/types/apiResponse";
 import { User } from "next-auth";
+import connectDB from "@/lib/connectDB";
+import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
 import mongoose from "mongoose";
+import UserModel, { Feedback } from "@/model/User";
+
+const sentiment = new Sentiment();
 
 export async function GET() {
-  await connectDB(); 
+  await connectDB();
 
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
@@ -34,44 +39,39 @@ export async function GET() {
       );
     }
 
-    // console.log("User found:", existingUser);
-
     const userFeedbacks = await UserModel.aggregate([
       { $match: { _id: userId } },
       { $unwind: { path: "$feedbacks", preserveNullAndEmptyArrays: true } },
       { $sort: { "feedbacks.dateCreated": -1 } },
       { $group: { _id: "$_id", feedbacks: { $push: "$feedbacks" } } },
     ]);
+    const stats = {
+      positive: 0,
+      negative: 0,
+      neutral: 0,
+    };
 
-    // console.log("Aggregation Result:", userFeedbacks);
-
-    if (
-      !userFeedbacks ||
-      userFeedbacks.length === 0 ||
-      !userFeedbacks[0].feedbacks.length
-    ) {
-      return Response.json(
-        {
-          success: false,
-          feedback: "No feedbacks found for this user",
-        },
-        { status: 404 }
-      );
-    }
-    // console.log(userFeedbacks[0].feedbacks);
+    const feedbacks = userFeedbacks[0].feedbacks;
+    feedbacks.forEach((fb: { content: string }) => {
+      const result = sentiment.analyze(fb.content);
+      if (result.score > 0) stats.positive++;
+      else if (result.score < 0) stats.negative++;
+      else stats.neutral++;
+    });
+    console.log(stats);
     return Response.json(
       {
         success: true,
-        feedback: userFeedbacks[0].feedbacks,
+        feedback: stats,
       },
-      { status: 201 }
+      { status: 200 }
     );
-  } catch (error) {
-    console.error("Aggregation Error:", error);
+  } catch (err) {
+    console.error(err);
     return Response.json(
       {
         success: false,
-        feedback: "Error in aggregation pipeline",
+        feedback: "Error",
       },
       { status: 500 }
     );
