@@ -5,6 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { DoorClosedIcon, DoorOpen, DoorOpenIcon, LogOutIcon, LucideMailOpen } from "lucide-react";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -17,25 +18,24 @@ const Navbar = () => {
         </a>
         {session ? (
           <>
-            <span className="mr-4">
-              Welcome, {user?.username || user?.email}
-            </span>
-            <Button
+            {/* <Button
               onClick={() => signOut()}
               className="w-full md:w-auto bg-indigo-100 text-black"
               variant="outline"
             >
               Logout
-            </Button>
+            </Button> */}
+            <DoorClosedIcon onClick={() => signOut()} />
           </>
         ) : (
           <Link href="/sign-in">
-            <Button
+            {/* <Button
               className="w-full md:w-auto bg-indigo-100 text-black"
               variant={"outline"}
             >
               Login
-            </Button>
+            </Button> */}
+            <LucideMailOpen />
           </Link>
         )}
       </div>

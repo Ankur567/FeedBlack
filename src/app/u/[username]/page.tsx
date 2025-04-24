@@ -178,7 +178,7 @@ export default function Sendfeedback() {
             </Card>
           </div>
           <Separator className="my-6" />
-          {session ? (
+          {!session ? (
             <div className="text-center">
               <div className="mb-4">Get Your feedback Board</div>
               <Link href={"/sign-up"}>

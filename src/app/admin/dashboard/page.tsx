@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
 import { Loader2, RefreshCcw } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -27,7 +28,7 @@ const Page = () => {
     setFeedbacks(feedbacks.filter((feedback) => feedback._id != feedbackId));
   };
 
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const form = useForm({
     resolver: zodResolver(acceptFeedbackSchema),
@@ -66,7 +67,7 @@ const Page = () => {
         const response2 = await axios.get<ApiResponse>(
           "/api/sentiment-analysis"
         );
-        console.log(response2.data.feedback)
+        console.log(response2.data.feedback);
         setStats(response2.data.feedback);
         if (refresh) {
           toast({
@@ -120,9 +121,9 @@ const Page = () => {
     }
   };
 
-  const username = session?.user as User;
+  const user = session?.user as User;
   const baseUrl = typeof window !== "undefined" ? window.location.origin : ""; // dynamically get base URL
-  const profileUrl = `${baseUrl}/u/${username?.username || ""}`;
+  const profileUrl = `${baseUrl}/u/${user?.username || ""}`;
 
   const copyToClipboard = async () => {
     try {
@@ -134,17 +135,33 @@ const Page = () => {
     }
   };
 
-  if (!session || !session.user) {
+  const router = useRouter();
+  const pathname = usePathname();
+  useEffect(() => {
+    if (status === "unauthenticated" && pathname !== "/sign-in") {
+      router.replace("/sign-in");
+    }
+  }, [status, pathname]);
+
+  if (status === "loading") {
     return (
-      <div className="flex items-center justify-center text-3xl font-bold">
-        {" "}
-        Please Login{" "}
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-20 w-20 animate-spin" />
       </div>
     );
   }
+
+  if (!session || !session.user) {
+    return (
+      <div className="flex items-center justify-center text-3xl font-bold">
+        Please Login
+      </div>
+    );
+  }
+
   return (
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
-      <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
+      <h1 className="text-4xl font-bold mb-4">Bonjour {user?.username}</h1>
       <div className="mb-4">
         <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{" "}
         <div className="flex items-center">
@@ -154,7 +171,7 @@ const Page = () => {
             disabled
             className="input input-bordered w-full p-2 mr-2"
           />
-          <Button onClick={copyToClipboard}>Copy</Button>
+          <Button onClick={copyToClipboard} className="bg-indigo-900 hover:bg-indigo-700">Copy</Button>
         </div>
       </div>
       <div className="mb-4">
@@ -163,6 +180,8 @@ const Page = () => {
           checked={acceptfeedbacks}
           onCheckedChange={handleSwitchChange}
           disabled={isSwitchLoading}
+          className="data-[state=checked]:bg-indigo-900 data-[state=unchecked]:bg-gray-300 
+             peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-indigo-500"
         />
         <span className="ml-2">
           Accept feedbacks: {acceptfeedbacks ? "On" : "Off"}

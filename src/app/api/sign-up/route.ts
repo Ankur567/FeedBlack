@@ -24,7 +24,7 @@ export async function POST(request: Request) {
                     feedback: "Username already exists"
                 }, { status: 400 }
             )
-        }
+        } 
 
         //finding user by email
         const existingUserByEmail = 
