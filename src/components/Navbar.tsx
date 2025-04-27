@@ -18,24 +18,22 @@ const Navbar = () => {
         </a>
         {session ? (
           <>
-            {/* <Button
+            <Button
               onClick={() => signOut()}
-              className="w-full md:w-auto bg-indigo-100 text-black"
+              className="bg-white text-indigo-950 w-0.1 hover:bg-indigo-50"
               variant="outline"
             >
               Logout
-            </Button> */}
-            <DoorClosedIcon onClick={() => signOut()} />
+            </Button>
           </>
         ) : (
           <Link href="/sign-in">
-            {/* <Button
-              className="w-full md:w-auto bg-indigo-100 text-black"
+            <Button
+              className="bg-white text-indigo-950 w-0.1 hover:bg-indigo-50"
               variant={"outline"}
             >
               Login
-            </Button> */}
-            <LucideMailOpen />
+            </Button>
           </Link>
         )}
       </div>

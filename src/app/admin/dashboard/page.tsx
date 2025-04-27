@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Feedback, User } from "@/model/User";
+import { Feedback } from "@/model/Feedback";
+import { User } from "@/model/User";
 import { acceptFeedbackSchema } from "@/schemas/acceptFeedbackSchema";
 import { ApiResponse } from "@/types/apiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -64,11 +65,6 @@ const Page = () => {
         setFeedbacks(
           Array.isArray(response.data.feedback) ? response.data.feedback : []
         );
-        const response2 = await axios.get<ApiResponse>(
-          "/api/sentiment-analysis"
-        );
-        console.log(response2.data.feedback);
-        setStats(response2.data.feedback);
         if (refresh) {
           toast({
             title: "Refreshed feedbacks",
@@ -93,7 +89,6 @@ const Page = () => {
   // Fetch initial state from the server
   useEffect(() => {
     if (!session || !session.user) return;
-
     fetchfeedbacks();
     fetchAcceptfeedbacks();
   }, [session]);
@@ -171,7 +166,12 @@ const Page = () => {
             disabled
             className="input input-bordered w-full p-2 mr-2"
           />
-          <Button onClick={copyToClipboard} className="bg-indigo-900 hover:bg-indigo-700">Copy</Button>
+          <Button
+            onClick={copyToClipboard}
+            className="bg-indigo-900 hover:bg-indigo-700"
+          >
+            Copy
+          </Button>
         </div>
       </div>
       <div className="mb-4">

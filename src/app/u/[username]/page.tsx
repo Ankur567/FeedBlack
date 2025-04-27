@@ -144,7 +144,7 @@ export default function Sendfeedback() {
             </form>
           </Form>
 
-          <div className="space-y-4 my-8">
+          {/* <div className="space-y-4 my-8">
             <div className="space-y-2">
               <Button
                 onClick={fetchSuggestedfeedbacks}
@@ -176,7 +176,7 @@ export default function Sendfeedback() {
                 )}
               </CardContent>
             </Card>
-          </div>
+          </div> */}
           <Separator className="my-6" />
           {!session ? (
             <div className="text-center">

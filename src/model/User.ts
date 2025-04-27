@@ -1,21 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-
-export interface Feedback extends Document {
-  content: string;
-  dateCreated: Date;
-}
-
-const FeedbackSchema: Schema<Feedback> = new Schema({
-  content: {
-    type: String,
-    required: true,
-  },
-  dateCreated: {
-    type: Date,
-    required: true,
-    default: Date.now,
-  },
-});
+import FeedbackSchema, { Feedback } from "./Feedback";
 
 export interface User extends Document {
   username: string;

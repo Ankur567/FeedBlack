@@ -13,10 +13,10 @@ import {
 import { Button } from "./ui/button";
 import { X } from "lucide-react";
 import dayjs from "dayjs";
-import { Feedback } from "@/model/User";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { ApiResponse } from "@/types/apiResponse";
+import { Feedback } from "@/model/Feedback";
 
 type feedbackCardProps = {
   feedback: Feedback;
@@ -38,7 +38,13 @@ const FeedbackCard = ({ feedback, onFeedbackDelete }: feedbackCardProps) => {
     onFeedbackDelete(feedback._id.toString());
   };
   return (
-    <Card className="card-bordered">
+    <Card className={`card-bordered ${
+      feedback.sentiment === "Positive"
+        ? "bg-green-50"
+        : feedback.sentiment === "Negative"
+        ? "bg-red-50"
+        : ""
+    }`}>
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>{feedback.content}</CardTitle>
