@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "./ui/button";
-import { X } from "lucide-react";
+import { CrossIcon, X, XIcon } from "lucide-react";
 import dayjs from "dayjs";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
@@ -40,18 +40,18 @@ const FeedbackCard = ({ feedback, onFeedbackDelete }: feedbackCardProps) => {
   return (
     <Card className={`card-bordered ${
       feedback.sentiment === "Positive"
-        ? "bg-green-50"
+        ? ""
         : feedback.sentiment === "Negative"
-        ? "bg-red-50"
-        : ""
-    }`}>
+        ? "bg-gray-200"
+        : "bg-gray-100"
+    } rounded-xl`}>
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>{feedback.content}</CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive">
-                <X className="w-5 h-5" />
+              <Button className="bg-black rounded-2xl">
+                Delete
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -75,7 +75,7 @@ const FeedbackCard = ({ feedback, onFeedbackDelete }: feedbackCardProps) => {
           {dayjs(feedback.dateCreated).format("MMM D, YYYY h:mm A")}
         </div>
       </CardHeader>
-      <CardContent></CardContent>
+      <CardContent>yo yo yo</CardContent>
     </Card>
   );
 };

@@ -3,6 +3,7 @@ import FeedbackSchema, { Feedback } from "./Feedback";
 
 export interface Product extends Document {
   productname: string;
+  category: string;
   feedbacks: Feedback[];
 }
 
@@ -12,6 +13,9 @@ const ProductSchema: Schema<Product> = new Schema({
     required: [true, "Productname is required"],
     trim: true,
     unique: true,
+  },
+  category: {
+    type: String,
   },
   feedbacks: [FeedbackSchema],
 });

@@ -166,10 +166,7 @@ const Page = () => {
             disabled
             className="input input-bordered w-full p-2 mr-2"
           />
-          <Button
-            onClick={copyToClipboard}
-            className="bg-indigo-900 hover:bg-indigo-700"
-          >
+          <Button onClick={copyToClipboard} className="">
             Copy
           </Button>
         </div>
@@ -180,8 +177,6 @@ const Page = () => {
           checked={acceptfeedbacks}
           onCheckedChange={handleSwitchChange}
           disabled={isSwitchLoading}
-          className="data-[state=checked]:bg-indigo-900 data-[state=unchecked]:bg-gray-300 
-             peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-indigo-500"
         />
         <span className="ml-2">
           Accept feedbacks: {acceptfeedbacks ? "On" : "Off"}

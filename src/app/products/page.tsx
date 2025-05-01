@@ -5,7 +5,7 @@ import { Product } from "@/model/Product";
 import { ApiResponse } from "@/types/apiResponse";
 import axios from "axios";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,14 +18,21 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Ghost } from "lucide-react";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
+  const [newProductName, setNewProductName] = useState("");
+  const [newProductCategory, setNewProductCategory] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
+  const fetchProducts = useCallback(
+    async (refresh: boolean = false) => {
+      setIsLoading(true);
       try {
         const response = await axios.get<ApiResponse>("/api/get-all-products");
         if (Array.isArray(response.data.feedback)) {
@@ -35,10 +42,22 @@ const ProductsPage = () => {
           setProducts([]);
           setFilteredProducts([]);
         }
+        if (refresh) {
+          toast({
+            title: "Refreshed feedbacks",
+            description: "Showing latest feedbacks",
+          });
+        }
       } catch (error) {
         console.error("Failed to fetch products:", error);
+      } finally {
+        setIsLoading(false);
       }
-    };
+    },
+    [setIsLoading, setProducts, setFilteredProducts]
+  );
+
+  useEffect(() => {
     fetchProducts();
   }, []);
 
@@ -49,6 +68,36 @@ const ProductsPage = () => {
       product.productname.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredProducts(filtered);
+  };
+
+  const handleSaveProduct = async () => {
+    try {
+      const response = await axios.post<ApiResponse>("/api/add-product", {
+        productname: newProductName,
+        category: newProductCategory,
+      });
+      toast({
+        title: "Success",
+        description: response.data.feedback,
+      });
+      //   if (response.data.success) {
+      //     // Refetch products after adding
+      //     setProducts((prev) => [
+      //       ...prev,
+      //       { productname: newProductName, feedbacks: [] } as Product,
+      //     ]);
+      //     setFilteredProducts((prev) => [
+      //       ...prev,
+      //       { productname: newProductName, feedbacks: [] } as Product,
+      //     ]);
+      //     setNewProductName("");
+      //     setNewProductCategory("");
+      //   } else {
+      //     console.error(response.data.feedback || "Failed to add product");
+      //   }
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
   };
 
   return (
@@ -67,7 +116,7 @@ const ProductsPage = () => {
           filteredProducts.map((product, index) => (
             <Link
               key={index}
-              href={`/products/${product.productname}`}
+              href={`/products/${encodeURIComponent(product.productname)}`} // <--- important for spaces/special characters
               className="p-4 border rounded-md shadow-md hover:shadow-lg transition"
             >
               <h2 className="text-2xl font-semibold">{product.productname}</h2>
@@ -78,17 +127,19 @@ const ProductsPage = () => {
         )}
       </div>
       <Separator />
-      <div>
+      <div className="mt-6">
         <p>
           Don't find the product you are looking for?{" "}
           <Dialog>
-            <DialogTrigger>Add now</DialogTrigger>
+            <DialogTrigger asChild>
+              <Button variant="ghost">Add now</Button>
+            </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
+                <DialogTitle>Add a product</DialogTitle>
                 <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
+                  Type the name of the product you want to add and press save to
+                  add it.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -98,24 +149,29 @@ const ProductsPage = () => {
                   </Label>
                   <Input
                     id="name"
-                    value="Pedro Duarte"
+                    value={newProductName}
+                    onChange={(e) => setNewProductName(e.target.value)}
                     className="col-span-3"
-                    // onChange={productNameHandler}
+                    placeholder="e.g. MacBook Air"
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="username" className="text-right">
-                    Username
+                  <Label htmlFor="category" className="text-right">
+                    Category
                   </Label>
                   <Input
-                    id="username"
-                    value="@peduarte"
+                    id="category"
+                    value={newProductCategory}
+                    onChange={(e) => setNewProductCategory(e.target.value)}
                     className="col-span-3"
+                    placeholder="e.g. Laptop"
                   />
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Save changes</Button>
+                <Button type="button" onClick={handleSaveProduct}>
+                  Save
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

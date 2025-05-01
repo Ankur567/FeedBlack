@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 
 const productReviewPage = () => {
   const params = useParams<{ productname: string }>();
-  const productname = params.productname;
+  const productname = decodeURIComponent(params.productname);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   useEffect(() => {
     const fetchfeedbacks = async () => {

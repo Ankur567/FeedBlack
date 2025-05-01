@@ -86,7 +86,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-indigo-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-200">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
@@ -154,7 +154,7 @@ const Page = () => {
             />
             <Button
               type="submit"
-              className="w-full bg-indigo-900 hover:bg-indigo-800"
+              className="w-full"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
@@ -171,7 +171,7 @@ const Page = () => {
         <div className="text-center mt-4">
           <p>
             Already a member?{" "}
-            <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
+            <Link href="/sign-in" className="text-gray-400 hover:text-black">
               Sign in
             </Link>
           </p>
