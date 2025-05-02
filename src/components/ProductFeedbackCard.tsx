@@ -11,6 +11,7 @@ import { ArrowDown, ArrowUpFromDot } from "lucide-react";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { set } from "mongoose";
 
 type ProductFeedbackCardProps = {
   feedback: Feedback;
@@ -31,44 +32,54 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
   }, [feedback._id]);
 
   const updateVotes = async (change: number) => {
+    let hasVotedDummy = hasVoted;
     if (hasVoted == "up") {
       if (change > 0) {
         setUpflag(true);
         setDownflag(false);
+        change = 0; // No change in votes
       } else {
         setUpflag(false);
         setDownflag(true);
+        setHasVoted("down");
+        hasVotedDummy = "down";
         setCountVotes((prev) => prev + change);
       }
     } else if (hasVoted == "down") {
       if (change < 0) {
         setDownflag(true);
         setUpflag(false);
+        change = 0; // No change in votes
       } else {
         setDownflag(false);
         setUpflag(true);
+        setHasVoted("up");
+        hasVotedDummy = "up";
         setCountVotes((prev) => prev + change);
       }
     } else {
       if (change > 0) {
         setUpflag(true);
         setDownflag(false);
+        setHasVoted("up");
+        hasVotedDummy = "up";
         setCountVotes((prev) => prev + change);
       } else {
         setDownflag(true);
         setUpflag(false);
+        setHasVoted("down");
+        hasVotedDummy = "down";
         setCountVotes((prev) => prev + change);
       }
     }
-    setHasVoted(change > 0 ? "up" : "down");
     const voteMap = JSON.parse(localStorage.getItem("feedbackVotes") || "{}");
-    voteMap[String(feedback._id)] = change > 0 ? "up" : "down";
+    voteMap[String(feedback._id)] = hasVotedDummy;
     localStorage.setItem("feedbackVotes", JSON.stringify(voteMap));
     try {
       const response = await axios.post("/api/update-product-vote", {
         productname: name,
         feedback: feedback,
-        voteCount: countVotes,
+        voteChange: change,
       });
       console.log(response.data.feedback);
     } catch (error) {
