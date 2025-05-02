@@ -68,7 +68,7 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
       const response = await axios.post("/api/update-product-vote", {
         productname: name,
         feedback: feedback,
-        voteChange: change,
+        voteCount: countVotes,
       });
       console.log(response.data.feedback);
     } catch (error) {
