@@ -19,7 +19,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Ghost } from "lucide-react";
+import { Ghost, Loader2, LucidePhone, Headphones } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -103,7 +110,6 @@ const ProductsPage = () => {
   return (
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
       <h1 className="text-4xl font-bold mb-6">Products</h1>
-
       <input
         type="text"
         value={searchQuery}
@@ -112,14 +118,23 @@ const ProductsPage = () => {
         className="w-full p-3 mb-6 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pb-8">
-        {filteredProducts.length > 0 ? (
+        {isLoading ? (
+          <Loader2 className="h-20 w-20 animate-spin" />
+        ) : filteredProducts.length > 0 ? (
           filteredProducts.map((product, index) => (
             <Link
               key={index}
               href={`/products/${encodeURIComponent(product.productname)}`} // <--- important for spaces/special characters
-              className="p-4 border rounded-md shadow-md hover:shadow-lg transition"
+              className="p-4 border rounded-md shadow-md hover:shadow-lg transition flex flex-row gap-3 justify-start items-center"
             >
               <h2 className="text-2xl font-semibold">{product.productname}</h2>
+              {product.category == "Mobiles" ? (
+                <LucidePhone />
+              ) : product.category == "Headphones" ? (
+                <Headphones />
+              ) : (
+                <Ghost />
+              )}
             </Link>
           ))
         ) : (
@@ -135,37 +150,46 @@ const ProductsPage = () => {
               <Button variant="ghost">Add now</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
+              <DialogHeader className="pb-4">
                 <DialogTitle>Add a product</DialogTitle>
                 <DialogDescription>
                   Type the name of the product you want to add and press save to
                   add it.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="name" className="">
+                    Product Name
                   </Label>
                   <Input
                     id="name"
                     value={newProductName}
                     onChange={(e) => setNewProductName(e.target.value)}
                     className="col-span-3"
-                    placeholder="e.g. MacBook Air"
+                    placeholder="Enter Product name"
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="category" className="text-right">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="category" className="">
                     Category
                   </Label>
-                  <Input
-                    id="category"
-                    value={newProductCategory}
-                    onChange={(e) => setNewProductCategory(e.target.value)}
-                    className="col-span-3"
-                    placeholder="e.g. Laptop"
-                  />
+                  <Select
+                    onValueChange={(value) => setNewProductCategory(value)}
+                    defaultValue={newProductCategory}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder="Select a category"
+                        className="w-full"
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Headphones">Headphones</SelectItem>
+                      <SelectItem value="Laptops">Laptops</SelectItem>
+                      <SelectItem value="Mobiles">Mobiles</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <DialogFooter>

@@ -23,7 +23,7 @@ import * as z from "zod";
 
 const productReviewPage = () => {
   const params = useParams<{ productname: string }>();
-  const productName = params.productname;
+  const productName = decodeURIComponent(params.productname);
 
   const form = useForm<z.infer<typeof feedbackSchema>>({
     resolver: zodResolver(feedbackSchema),

@@ -6,8 +6,9 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const productname = searchParams.get("productname");
+  const decodedProductName = decodeURIComponent(productname || "");
 
-  if (!productname) {
+  if (!decodedProductName) {
     return Response.json(
       { success: false, feedback: "Product name is required" },
       { status: 400 }
@@ -16,7 +17,7 @@ export async function GET(request: Request) {
 
   try {
     const existingProduct = await ProductModel.findOne({
-      productname: { $regex: new RegExp(`^${productname.trim()}$`, "i") },
+      productname: decodedProductName,
     });
     if (!existingProduct) {
       return Response.json(

@@ -4,6 +4,7 @@ export interface Feedback extends Document {
   content: string;
   dateCreated: Date;
   sentiment: string;
+  votes: number;
 }
 
 const FeedbackSchema: Schema<Feedback> = new Schema({
@@ -20,7 +21,11 @@ const FeedbackSchema: Schema<Feedback> = new Schema({
     type: String,
     enum: ["Positive", "Negative", "Neutral"],
     default: "Neutral",
-  }  
+  },
+  votes: {
+    type: Number,
+    default: 0,
+  },
 });
 
-export default FeedbackSchema
+export default FeedbackSchema;

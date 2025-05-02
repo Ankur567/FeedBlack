@@ -9,20 +9,12 @@ export async function POST(request: Request) {
   try {
     const product = await ProductModel.findOne({ productname: productName });
     if (!product) {
-      // making a new product and add the feedback to it
-      const newproduct = new ProductModel({
-        productname: productName,
-        feedbacks: [],
-      });
-      const newFeedback = { content, dateCreated: new Date() };
-      newproduct.feedbacks.push(newFeedback as Feedback);
-      await newproduct.save();
       return Response.json(
         {
-          success: true,
-          feedback: "New product created and feedback sent succesfully",
+          success: false,
+          feedback: "No Such Product Found",
         },
-        { status: 200 }
+        { status: 400 }
       );
     }
 
