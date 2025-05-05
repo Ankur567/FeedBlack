@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface Feedback extends Document {
+  title: string;
   content: string;
   dateCreated: Date;
   sentiment: string;
@@ -8,6 +9,11 @@ export interface Feedback extends Document {
 }
 
 const FeedbackSchema: Schema<Feedback> = new Schema({
+  title: {
+    type: String,
+    minLength: 3,
+    maxLength: 30,
+  },
   content: {
     type: String,
     required: true,

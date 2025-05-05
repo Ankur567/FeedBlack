@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Ghost, Loader2, LucidePhone, Headphones } from "lucide-react";
+import { Ghost, Loader2, LucidePhone, Headphones, Laptop, Phone, Smartphone, LucideSmartphone } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -34,8 +34,10 @@ const ProductsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const [newProductName, setNewProductName] = useState("");
+  const [newProductBrand, setNewProductBrand] = useState("");
   const [newProductCategory, setNewProductCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const fetchProducts = useCallback(
     async (refresh: boolean = false) => {
@@ -51,8 +53,8 @@ const ProductsPage = () => {
         }
         if (refresh) {
           toast({
-            title: "Refreshed feedbacks",
-            description: "Showing latest feedbacks",
+            title: "Refreshed products",
+            description: "Showing latest products",
           });
         }
       } catch (error) {
@@ -82,26 +84,18 @@ const ProductsPage = () => {
       const response = await axios.post<ApiResponse>("/api/add-product", {
         productname: newProductName,
         category: newProductCategory,
+        brand: newProductBrand,
       });
       toast({
         title: "Success",
         description: response.data.feedback,
       });
-      //   if (response.data.success) {
-      //     // Refetch products after adding
-      //     setProducts((prev) => [
-      //       ...prev,
-      //       { productname: newProductName, feedbacks: [] } as Product,
-      //     ]);
-      //     setFilteredProducts((prev) => [
-      //       ...prev,
-      //       { productname: newProductName, feedbacks: [] } as Product,
-      //     ]);
-      //     setNewProductName("");
-      //     setNewProductCategory("");
-      //   } else {
-      //     console.error(response.data.feedback || "Failed to add product");
-      //   }
+      if (response.data.success) {
+        fetchProducts(true);
+        setIsDialogOpen(false);
+        setNewProductName("");
+        setNewProductCategory("");
+      }
     } catch (error) {
       console.error("Error adding product:", error);
     }
@@ -119,22 +113,31 @@ const ProductsPage = () => {
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pb-8">
         {isLoading ? (
-          <Loader2 className="h-20 w-20 animate-spin" />
+          <div className="flex justify-center items-center h-full">
+            <Loader2 className="h-20 w-20 animate-spin" />
+          </div>
         ) : filteredProducts.length > 0 ? (
           filteredProducts.map((product, index) => (
             <Link
               key={index}
-              href={`/products/${encodeURIComponent(product.productname)}`} // <--- important for spaces/special characters
-              className="p-4 border rounded-md shadow-md hover:shadow-lg transition flex flex-row gap-3 justify-start items-center"
+              href={`/products/${encodeURIComponent(product.productname)}`}
+              className="p-4 border rounded-md shadow-md hover:shadow-lg transition flex flex-col gap-3 justify-start items-start"
             >
-              <h2 className="text-2xl font-semibold">{product.productname}</h2>
-              {product.category == "Mobiles" ? (
-                <LucidePhone />
-              ) : product.category == "Headphones" ? (
-                <Headphones />
-              ) : (
-                <Ghost />
-              )}
+              <div className="flex flex-row gap-2 items-center">
+                <h2 className="text-2xl font-semibold">
+                  {product.productname}
+                </h2>
+                {product.category == "Mobiles" ? (
+                  <LucideSmartphone />
+                ) : product.category == "Headphones" ? (
+                  <Headphones />
+                ) : product.category == "Laptops" ? (
+                  <Laptop />
+                ) : (
+                  <Ghost />
+                )}
+              </div>
+              <p className="text-gray-500">{product.brand}</p>
             </Link>
           ))
         ) : (
@@ -145,7 +148,7 @@ const ProductsPage = () => {
       <div className="mt-6">
         <p>
           Don't find the product you are looking for?{" "}
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="ghost">Add now</Button>
             </DialogTrigger>
@@ -166,6 +169,18 @@ const ProductsPage = () => {
                     id="name"
                     value={newProductName}
                     onChange={(e) => setNewProductName(e.target.value)}
+                    className="col-span-3"
+                    placeholder="Enter Product name"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="brand" className="">
+                    Brand Name
+                  </Label>
+                  <Input
+                    id="brand"
+                    value={newProductBrand}
+                    onChange={(e) => setNewProductBrand(e.target.value)}
                     className="col-span-3"
                     placeholder="Enter Product name"
                   />

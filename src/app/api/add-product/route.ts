@@ -4,7 +4,7 @@ import ProductModel from "@/model/Product";
 export async function POST(request: Request) {
   await connectDB();
 
-  const { productname, category } = await request.json();
+  const { productname, category, brand } = await request.json();
   try {
     const existingproduct = await ProductModel.findOne({
       productname: productname,
@@ -18,9 +18,11 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+    console.log(brand)
     const newproduct = new ProductModel({
       productname: productname,
       category: category,
+      brand: brand,
       feedbacks: [],
     });
     await newproduct.save();

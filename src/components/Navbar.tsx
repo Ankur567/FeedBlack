@@ -14,7 +14,7 @@ const Navbar = () => {
     <nav className="md:p-4 shadow-md bg-primary text-white">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <a href="#" className="text-xl font-bold mb-4 md:mb-0">
-          Anonymous Feedback
+          FeedBlack
         </a>
         {session ? (
           <>

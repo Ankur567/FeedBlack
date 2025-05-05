@@ -11,7 +11,7 @@ import { ArrowDown, ArrowUpFromDot } from "lucide-react";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { set } from "mongoose";
+import { HugeiconsIcon } from "@hugeicons/react";
 
 type ProductFeedbackCardProps = {
   feedback: Feedback;
@@ -28,6 +28,13 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
     const voteMap = JSON.parse(localStorage.getItem("feedbackVotes") || "{}");
     if (voteMap[String(feedback._id)]) {
       setHasVoted(voteMap[String(feedback._id)]);
+      if (voteMap[String(feedback._id)] === "up") {
+        setUpflag(true);
+        setDownflag(false);
+      } else if (voteMap[String(feedback._id)] === "down") {
+        setDownflag(true);
+        setUpflag(false);
+      }
     }
   }, [feedback._id]);
 
@@ -99,21 +106,22 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
     >
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle>{feedback.content}</CardTitle>
+          <CardTitle>{feedback.title}</CardTitle>
         </div>
         <div className="text-sm">
           {dayjs(feedback.dateCreated).format("MMM D, YYYY h:mm A")}
         </div>
       </CardHeader>
-      <CardContent>jkjfjkf</CardContent>
+      <CardContent>{feedback.content}</CardContent>
       <CardFooter>
         <div className="flex flex-row items-center space-x-2">
           <Button
             variant="ghost"
             onClick={() => updateVotes(1)}
             disabled={upflag}
+            className="bg-black text-white"
           >
-            <ArrowUpFromDot className="h-5 w-5" />
+            <ArrowUpFromDot />
           </Button>
           <span>{countVotes}</span>
           <Button
@@ -121,7 +129,7 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
             onClick={() => updateVotes(-1)}
             disabled={downflag}
           >
-            <ArrowDown className="h-5 w-5" />
+            <ArrowDown />
           </Button>
         </div>
       </CardFooter>

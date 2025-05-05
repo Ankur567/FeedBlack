@@ -9,9 +9,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { feedbackSchema } from "@/schemas/feedbackSchema";
+import { productFeedbackSchema } from "@/schemas/productFeedbackSchema";
 import { ApiResponse } from "@/types/apiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
@@ -25,20 +26,27 @@ const productReviewPage = () => {
   const params = useParams<{ productname: string }>();
   const productName = decodeURIComponent(params.productname);
 
-  const form = useForm<z.infer<typeof feedbackSchema>>({
-    resolver: zodResolver(feedbackSchema),
+  const form = useForm<z.infer<typeof productFeedbackSchema>>({
+    resolver: zodResolver(productFeedbackSchema),
+    defaultValues: {
+      title: "",
+      content: "",
+    },
   });
+  
   const feedbackContent = form.watch("content");
 
   const [isLoading, setIsLoading] = useState(false);
-  const onSubmit = async (data: z.infer<typeof feedbackSchema>) => {
+  const onSubmit = async (data: z.infer<typeof productFeedbackSchema>) => {
     setIsLoading(true);
     try {
-      const response = await axios.post<ApiResponse>("/api/send-product-feedback", {
-        ...data,
-        productName,
-      });
-
+      const response = await axios.post<ApiResponse>(
+        "/api/send-product-feedback",
+        {
+          ...data,
+          productName,
+        }
+      );
       toast({
         title: response.data.feedback,
         variant: "default",
@@ -64,14 +72,28 @@ const productReviewPage = () => {
           <h1 className="text-4xl font-bold mb-6 text-center">{productName}</h1>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormLabel>Send Anonymous feedback to @{productName}</FormLabel>
+              <FormField
+                name="title"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <Input
+                      {...field}
+                      name="title"
+                      className="border-indigo-100"
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="content"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Send Anonymous feedback to @{productName}
-                    </FormLabel>
+                    <FormLabel>Feedback</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Write your anonymous feedback here"
