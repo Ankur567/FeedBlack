@@ -25,9 +25,19 @@ export async function GET(request: Request) {
         { status: 404 }
       );
     }
-
+    const feedbacks = existingProduct.feedbacks;
+    let averageRating = 0;
+    if (feedbacks.length > 0) {
+      let sumRating = 0;
+      feedbacks.forEach((feedback) => {
+        sumRating += feedback.rating;
+      });
+      averageRating = sumRating / feedbacks.length;
+    }
+    existingProduct.rating = Number(averageRating.toFixed(1));
+    await existingProduct.save();
     return Response.json(
-      { success: true, feedback: existingProduct.feedbacks },
+      { success: true, feedback: existingProduct },
       { status: 200 }
     );
   } catch (error) {

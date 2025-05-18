@@ -25,7 +25,7 @@ export default function RootLayout({
     pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up"); // Check if it's an auth page
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <AuthProvider>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}

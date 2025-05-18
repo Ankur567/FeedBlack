@@ -6,9 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { CardHeader, CardContent, Card } from "@/components/ui/card";
-import { useCompletion } from "ai/react";
 import {
   Form,
   FormControl,
@@ -28,26 +25,9 @@ import { useSession } from "next-auth/react";
 
 const specialChar = "||";
 
-const parseStringfeedbacks = (feedbackString: string): string[] => {
-  return feedbackString.split(specialChar);
-};
-
-const initialfeedbackString =
-  "What's your favorite movie?||Do you have any pets?||What's your dream job?";
-
 export default function Sendfeedback() {
   const params = useParams<{ username: string }>();
   const username = params.username;
-
-  const {
-    complete,
-    completion,
-    isLoading: isSuggestLoading,
-    error,
-  } = useCompletion({
-    api: "/api/suggest-feedbacks",
-    initialCompletion: initialfeedbackString,
-  });
 
   const form = useForm<z.infer<typeof feedbackSchema>>({
     resolver: zodResolver(feedbackSchema),
@@ -84,15 +64,6 @@ export default function Sendfeedback() {
       });
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const fetchSuggestedfeedbacks = async () => {
-    try {
-      complete("");
-    } catch (error) {
-      console.error("Error fetching feedbacks:");
-      // Handle error appropriately
     }
   };
 
@@ -144,40 +115,6 @@ export default function Sendfeedback() {
             </form>
           </Form>
 
-          {/* <div className="space-y-4 my-8">
-            <div className="space-y-2">
-              <Button
-                onClick={fetchSuggestedfeedbacks}
-                className="my-4"
-                disabled={isSuggestLoading}
-              >
-                Suggest feedbacks
-              </Button>
-              <p>Click on any feedback below to select it.</p>
-            </div>
-            <Card>
-              <CardHeader>
-                <h3 className="text-xl font-semibold">feedbacks</h3>
-              </CardHeader>
-              <CardContent className="flex flex-col space-y-4">
-                {error ? (
-                  <p className="text-red-500">{error.message}</p>
-                ) : (
-                  parseStringfeedbacks(completion).map((feedback, index) => (
-                    <Button
-                      key={index}
-                      variant="outline"
-                      className="mb-2"
-                      onClick={() => handlefeedbackClick(feedback)}
-                    >
-                      {feedback}
-                    </Button>
-                  ))
-                )}
-              </CardContent>
-            </Card>
-          </div> */}
-          <Separator className="my-6" />
           {!session ? (
             <div className="text-center">
               <div className="mb-4">Get Your feedback Board</div>

@@ -21,6 +21,7 @@ import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import Rating from "@mui/material/Rating";
 
 const productReviewPage = () => {
   const params = useParams<{ productname: string }>();
@@ -29,11 +30,12 @@ const productReviewPage = () => {
   const form = useForm<z.infer<typeof productFeedbackSchema>>({
     resolver: zodResolver(productFeedbackSchema),
     defaultValues: {
+      rating: 3,
       title: "",
       content: "",
     },
   });
-  
+
   const feedbackContent = form.watch("content");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -66,13 +68,39 @@ const productReviewPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-white">
+    <div className="flex flex-col justify-start items-center min-h-screen bg-white pt-10">
       <div className="w-1/2 align-middle">
         <div className="w-full bg-white p-5 rounded-xl">
           <h1 className="text-4xl font-bold mb-6 text-center">{productName}</h1>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormLabel>Send Anonymous feedback to @{productName}</FormLabel>
+              <FormField
+                name="rating"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="flex pb-10 items-center">
+                    <FormLabel className="text-center pr-5 pt-3">
+                      Give your anonymous rating for the product
+                    </FormLabel>
+                    <FormControl>
+                      <Rating
+                        value={field.value || 3}
+                        onChange={(_, value) => field.onChange(value)}
+                        size="large"
+                        sx={{
+                          color: 'black',             // sets filled star color
+                          '& .MuiRating-iconEmpty': {
+                            color: 'gray',            // optional: sets empty star color
+                          },
+                        }}
+                        precision={0.5}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormLabel>Add Anonymous feedback for @{productName}</FormLabel>
               <FormField
                 name="title"
                 control={form.control}

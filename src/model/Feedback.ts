@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface Feedback extends Document {
   title: string;
+  rating: number;
   content: string;
   dateCreated: Date;
   sentiment: string;
@@ -13,6 +14,12 @@ const FeedbackSchema: Schema<Feedback> = new Schema({
     type: String,
     minLength: 3,
     maxLength: 30,
+  },
+  rating: {
+    type: Number,
+    default: 3,
+    min: 1,
+    max: 5,
   },
   content: {
     type: String,

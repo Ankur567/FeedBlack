@@ -11,7 +11,7 @@ import { ArrowDown, ArrowUpFromDot } from "lucide-react";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { Rating } from "@mui/material";
 
 type ProductFeedbackCardProps = {
   feedback: Feedback;
@@ -35,6 +35,10 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
         setDownflag(true);
         setUpflag(false);
       }
+    }
+    if (countVotes == 0) {
+      setUpflag(false);
+      setDownflag(true);
     }
   }, [feedback._id]);
 
@@ -94,9 +98,10 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
       setCountVotes((prev) => prev - change); // Revert the vote count on error
     }
   };
+
   return (
     <Card
-      className={`card-bordered ${
+      className={`card-bordered flex flex-col justify-between h-full ${
         feedback.sentiment === "Positive"
           ? "bg-green-50"
           : feedback.sentiment === "Negative"
@@ -105,15 +110,34 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
       }`}
     >
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle>{feedback.title}</CardTitle>
-        </div>
-        <div className="text-sm">
-          {dayjs(feedback.dateCreated).format("MMM D, YYYY h:mm A")}
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-col">
+            <div>
+              <CardTitle>{feedback.title}</CardTitle>
+            </div>
+            <div className="text-sm">
+              {dayjs(feedback.dateCreated).format("MMM D, YYYY h:mm A")}
+            </div>
+          </div>
+          <Rating
+            name="read-only"
+            value={feedback.rating}
+            readOnly
+            precision={0.1}
+            size="small"
+            sx={{
+              color: "black",
+              "& .MuiRating-iconEmpty": {
+                color: "gray",
+              },
+            }}
+          />
         </div>
       </CardHeader>
-      <CardContent>{feedback.content}</CardContent>
-      <CardFooter>
+
+      <CardContent className="flex-grow">{feedback.content}</CardContent>
+
+      <CardFooter className="mt-auto">
         <div className="flex flex-row items-center space-x-2">
           <Button
             variant="ghost"

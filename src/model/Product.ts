@@ -6,6 +6,7 @@ export interface Product extends Document {
   brand: string;
   category: string;
   feedbacks: Feedback[];
+  rating: number;
 }
 
 const ProductSchema: Schema<Product> = new Schema({
@@ -24,6 +25,10 @@ const ProductSchema: Schema<Product> = new Schema({
     type: String,
   },
   feedbacks: [FeedbackSchema],
+  rating: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const ProductModel =

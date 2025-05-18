@@ -5,9 +5,8 @@ import ProductModel from "@/model/Product";
 export async function POST(request: Request) {
   await connectDB();
 
-  const { productName, content, title } = await request.json();
+  const { productName, rating, content, title } = await request.json();
   try {
-    console.log(title);
     const product = await ProductModel.findOne({ productname: productName });
     if (!product) {
       return Response.json(
@@ -18,8 +17,8 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-    const newFeedback = { title, content, dateCreated: new Date() };
+    console.log(rating);
+    const newFeedback = { rating, title, content, dateCreated: new Date() };
     product.feedbacks.push(newFeedback as Feedback);
     await product.save();
     return Response.json(

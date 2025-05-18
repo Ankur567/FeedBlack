@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 export const productFeedbackSchema = z.object({
+  rating: z
+    .number()
+    .min(1, { message: "Rating must be at least 1" })
+    .max(5, { message: "Rating must be at most 5" }),
   title: z
     .string()
     .min(3, { message: "Title must be of minimum 3 characters" })
