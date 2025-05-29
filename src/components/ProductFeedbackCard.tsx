@@ -25,6 +25,21 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
   const [hasVoted, setHasVoted] = useState<"up" | "down" | null>(null);
 
   useEffect(() => {
+    const fetchVotes = async () => {
+      try {
+        const response = await axios.get("/api/get-feedback-votes", {
+          params: { id: feedback._id, productname: name },
+        });
+        setCountVotes(response.data.feedback);
+      } catch (err) {
+        console.error("Error fetching vote count", err);
+      }
+    };
+
+    fetchVotes(); // initial call
+    const interval = setInterval(fetchVotes, 5000); // every 5 seconds
+
+    setCountVotes(feedback.votes);
     const voteMap = JSON.parse(localStorage.getItem("feedbackVotes") || "{}");
     if (voteMap[String(feedback._id)]) {
       setHasVoted(voteMap[String(feedback._id)]);
@@ -36,14 +51,14 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
         setUpflag(false);
       }
     }
-    if (countVotes == 0) {
-      setUpflag(false);
-      setDownflag(true);
-    }
-  }, [feedback._id]);
+    return () => clearInterval(interval);
+  }, [feedback]);
 
   const updateVotes = async (change: number) => {
     let hasVotedDummy = hasVoted;
+    if (change < 0 && countVotes <= 0) {
+      return; // Prevent negative votes
+    }
     if (hasVoted == "up") {
       if (change > 0) {
         setUpflag(true);
@@ -86,6 +101,7 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
     const voteMap = JSON.parse(localStorage.getItem("feedbackVotes") || "{}");
     voteMap[String(feedback._id)] = hasVotedDummy;
     localStorage.setItem("feedbackVotes", JSON.stringify(voteMap));
+    console.log(`count after operation-${countVotes}`);
     try {
       const response = await axios.post("/api/update-product-vote", {
         productname: name,
@@ -151,7 +167,7 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
           <Button
             variant="ghost"
             onClick={() => updateVotes(-1)}
-            disabled={downflag}
+            disabled={downflag || countVotes <= 0}
           >
             <ArrowDown />
           </Button>

@@ -24,6 +24,12 @@ export async function POST(request: Request) {
     }
     const votes = product.feedbacks[feedbackIndex].votes;
     const newVoteCount = votes + voteChange;
+    if (newVoteCount < 0) {
+      return Response.json(
+        { success: false, feedback: "Vote count cannot be negative" },
+        { status: 400 }
+      );
+    }
     product.feedbacks[feedbackIndex].votes = newVoteCount;
     await product.save();
     return Response.json(
