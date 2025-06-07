@@ -110,7 +110,7 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
       });
       console.log(response.data.feedback);
     } catch (error) {
-      console.error("Error updating votes:", error);
+      console.error("Error updating votes");
       setCountVotes((prev) => prev - change); // Revert the vote count on error
     }
   };

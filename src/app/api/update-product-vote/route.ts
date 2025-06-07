@@ -6,7 +6,6 @@ export async function POST(request: NextRequest) {
   await connectDB();
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  console.log(ip);
   const { productname, feedback, voteChange } = await request.json();
   try {
     const product = await ProductModel.findOne({ productname });
@@ -17,12 +16,19 @@ export async function POST(request: NextRequest) {
       );
     }
     const feedbackIndex = product.feedbacks.findIndex(
-      (f) => f.content === feedback.content
+      (f) => (f._id as any).toString() === feedback._id
     );
     if (feedbackIndex === -1) {
       return Response.json(
         { success: false, feedback: "Feedback not found" },
-        { status: 404 }
+        { status: 400 }
+      );
+    }
+    // Prevent duplicate voting from same IP
+    if (product.feedbacks[feedbackIndex].voters.includes(ip)) {
+      return Response.json(
+        { success: false, feedback: "Already voted from this IP" },
+        { status: 403 }
       );
     }
     const votes = product.feedbacks[feedbackIndex].votes;
@@ -34,6 +40,7 @@ export async function POST(request: NextRequest) {
       );
     }
     product.feedbacks[feedbackIndex].votes = newVoteCount;
+    product.feedbacks[feedbackIndex].voters.push(ip);
     await product.save();
     return Response.json(
       { success: true, feedback: "Vote updated successfully" },
