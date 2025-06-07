@@ -23,6 +23,7 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
   const [upflag, setUpflag] = useState(false);
   const [downflag, setDownflag] = useState(false);
   const [hasVoted, setHasVoted] = useState<"up" | "down" | null>(null);
+  const [ipCheck, setIpCheck] = useState(false);
 
   useEffect(() => {
     const fetchVotes = async () => {
@@ -40,6 +41,7 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
     const interval = setInterval(fetchVotes, 5000); // every 5 seconds
 
     setCountVotes(feedback.votes);
+    if (!localStorage.getItem("feedbackVotes")) setIpCheck(true);
     const voteMap = JSON.parse(localStorage.getItem("feedbackVotes") || "{}");
     if (voteMap[String(feedback._id)]) {
       setHasVoted(voteMap[String(feedback._id)]);
@@ -107,6 +109,7 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
         productname: name,
         feedback: feedback,
         voteChange: change,
+        ipCheck
       });
       console.log(response.data.feedback);
     } catch (error) {

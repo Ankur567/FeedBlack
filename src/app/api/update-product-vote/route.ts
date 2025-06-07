@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   await connectDB();
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const { productname, feedback, voteChange } = await request.json();
+  const { productname, feedback, voteChange, ipCheck } = await request.json();
   try {
     const product = await ProductModel.findOne({ productname });
     if (!product) {
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
     // Prevent duplicate voting from same IP
-    if (product.feedbacks[feedbackIndex].voters.includes(ip)) {
+    if (ipCheck && product.feedbacks[feedbackIndex].voters.includes(ip)) {
       return Response.json(
         { success: false, feedback: "Already voted from this IP" },
         { status: 403 }
