@@ -11,7 +11,20 @@ const HomePage = () => {
       <div className="text-center px-6">
         <h1 className="text-6xl md:text-7xl font-extrabold mb-6 tracking-tight leading-tight">
           <TypeAnimation
-            sequence={["Welcome to Anonymous Feedback", 2000, "", 1000]}
+            sequence={[
+              "Welcome to Anonymous Feedback",
+              2000,
+              "",
+              1000,
+              "Share thoughts without identity",
+              2000,
+              "",
+              1000,
+              "Empower products with honesty",
+              2000,
+              "",
+              1000,
+            ]}
             wrapper="span"
             speed={60}
             repeat={Infinity}

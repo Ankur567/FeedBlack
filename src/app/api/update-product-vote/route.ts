@@ -1,9 +1,12 @@
 import connectDB from "@/lib/connectDB";
 import ProductModel from "@/model/Product";
+import { NextRequest } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   await connectDB();
-
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  console.log(ip);
   const { productname, feedback, voteChange } = await request.json();
   try {
     const product = await ProductModel.findOne({ productname });
