@@ -12,6 +12,7 @@ import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Rating } from "@mui/material";
+import { getFingerprint } from "@/helpers/fingerprint";
 
 type ProductFeedbackCardProps = {
   feedback: Feedback;
@@ -24,8 +25,10 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
   const [downflag, setDownflag] = useState(false);
   const [hasVoted, setHasVoted] = useState<"up" | "down" | null>(null);
   const [ipCheck, setIpCheck] = useState(false);
+  const [fingerprint, setFingerprint] = useState<string | null>(null);
 
   useEffect(() => {
+    getFingerprint().then(setFingerprint);
     const fetchVotes = async () => {
       try {
         const response = await axios.get("/api/get-feedback-votes", {
@@ -109,7 +112,8 @@ const ProductFeedbackCard = ({ feedback, name }: ProductFeedbackCardProps) => {
         productname: name,
         feedback: feedback,
         voteChange: change,
-        ipCheck
+        ipCheck,
+        fingerprint,
       });
       console.log(response.data.feedback);
     } catch (error) {

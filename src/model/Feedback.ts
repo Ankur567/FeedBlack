@@ -8,6 +8,7 @@ export interface Feedback extends Document {
   sentiment: string;
   votes: number;
   voters: string[];
+  fingerprints: string[];
 }
 
 const FeedbackSchema: Schema<Feedback> = new Schema({
@@ -41,6 +42,10 @@ const FeedbackSchema: Schema<Feedback> = new Schema({
     default: 0,
   },
   voters: {
+    type: [String], 
+    default: [],
+  },
+  fingerprints: {
     type: [String], 
     default: [],
   },
